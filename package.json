@@ -1,0 +1,22 @@
+{
+  "name": "wibes-mq",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "server": "tsx testing/server.ts",
+    "client": "tsx testing/client.ts",
+    "consumer": "tsx testing/consumer.ts",
+    "provider": "tsx testing/provider.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/node": "^22.13.9",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2"
+  },
+  "dependencies": {}
+}
