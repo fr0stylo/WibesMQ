@@ -46,7 +46,7 @@ await client.enqueue('my-topic', { data: 'Hello, World!' });
 import { Client } from 'wibes-mq';
 
 // Create a client
-const client = new Client({ url: 'ws://localhost:1234' });
+const client = new Client({ url: 'wibesmq://localhost:1234' });
 
 // Connect to the server
 await client.connect();
