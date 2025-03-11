@@ -3,7 +3,10 @@ import { QueueEntry } from './types.js';
 import { Sinkable } from './wal.js';
 
 export class DurableQueue<T> extends EmitingQueue<T> {
-  constructor(private sink: Sinkable, ...props: any) {
+  constructor(
+    private sink: Sinkable,
+    ...props: any
+  ) {
     super(...props);
   }
 

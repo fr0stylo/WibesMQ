@@ -23,7 +23,6 @@ export class ReadTransformer<T> extends Transform {
   }
 }
 
-
 export class WriteTransformer extends Transform {
   constructor() {
     super({ objectMode: true });

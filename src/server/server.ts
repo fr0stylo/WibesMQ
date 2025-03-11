@@ -1,25 +1,23 @@
 import { Writable } from 'node:stream';
 
-import { DurableQueue, GenericQueue, QueueEmit } from '../queue/index.js';
+import { GenericQueue, QueueEmit } from '../queue/index.js';
 import { Connection, CreateQueueRequest, EnqueueRequest, MessageFrame, MessageType, ServerProps, SubscribeRequest } from './types.js';
 import { BaseServer } from '../base/server.js';
 import { QueueManager } from '../queue/manager.js';
 
 export class QueueServer extends BaseServer<MessageFrame> {
-  constructor(props?: ServerProps, private queueManager = new QueueManager<unknown, { connectionID: string }>()) {
+  constructor(
+    props?: ServerProps,
+    private queueManager = new QueueManager<unknown, { connectionID: string }>(),
+  ) {
     super(props);
     this._handleQueueEvent = this._handleQueueEvent.bind(this);
     this.queueManager.onQueueEventListener = this._handleQueueEvent;
   }
 
-  private async _handleQueueEvent(
-    ev: QueueEmit<unknown>,
-    subscribers: GenericQueue<{ connectionID: string }>,
-    queue: GenericQueue<unknown>,
-  ): Promise<void> {
-    const receiver = subscribers.dequeue();
-    if (receiver && this.connections.has(receiver.data.connectionID)) {
-      const { socket, writer } = this.connections.get(receiver.data.connectionID)!;
+  private async _handleQueueEvent(ev: QueueEmit<unknown>, subscriberId: string, queue: GenericQueue<unknown>): Promise<void> {
+    if (this.connections.has(subscriberId)) {
+      const { socket, writer } = this.connections.get(subscriberId)!;
       const item = queue.dequeue()!;
       socket.once(item.metadata.messageID, async (x: MessageFrame) => {
         switch (x.type) {
@@ -43,7 +41,7 @@ export class QueueServer extends BaseServer<MessageFrame> {
   }
 
   private async _handleSubscription(c: Writable, connectionID: string, { data, messageID }: MessageFrame<SubscribeRequest>) {
-    this.queueManager.subscribe(data.name, { connectionID: connectionID });
+    this.queueManager.subscribe(data.name, connectionID);
 
     return this._streamWrite(c, { type: MessageType.ack, data: undefined, messageID, metadata: {} });
   }

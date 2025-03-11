@@ -17,11 +17,9 @@ async function consumer(i: number) {
   let queue = new QueueClient();
   queue = await queue.connect();
 
-  await queue.createQueue(`queue:listener:${i % 15}`);
-
-  await queue.consume(`queue:listener:${i % 15}`, async (x: { payload: string }) => {
-    console.log(`Consumer: ${i}: `, x);
-    await setTimeout(Math.random() * 2000);
+  await queue.consume(`queue:listener:${i % 3}`, async (x: { payload: string }) => {
+    // console.log(`Consumer: ${i}: `, x);
+    await setTimeout(Math.random() * 1000);
   });
 
   return;
@@ -40,4 +38,4 @@ async function publisher(i: number) {
   return;
 }
 
-await Promise.all([...new Array(3).fill(1).map((_, i) => publisher(i + 1)), ...new Array(10).fill(1).map((_, i) => consumer(i + 1))]);
+await Promise.all([...new Array(1).fill(1).map((_, i) => publisher(i + 1)), ...new Array(16).fill(1).map((_, i) => consumer(i + 1))]);

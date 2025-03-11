@@ -15,7 +15,10 @@ export class WALManager {
   private wal: Writable;
   private timer: NodeJS.Timeout;
 
-  constructor(private walPath: string, private snapshotPath: string) {
+  constructor(
+    private walPath: string,
+    private snapshotPath: string,
+  ) {
     this._loadSnapshot = this._loadSnapshot.bind(this);
     this._generateSnapshotEntries = this._generateSnapshotEntries.bind(this);
 
